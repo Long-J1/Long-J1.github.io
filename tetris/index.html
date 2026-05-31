@@ -1,0 +1,662 @@
+---
+layout: false
+---
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>俄罗斯方块 - 完整控制版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff;
+      font-family: 'Arial', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      touch-action: manipulation;
+      overflow: hidden;
+    }
+
+    .game-container {
+      text-align: center;
+      background: rgba(0, 0, 30, 0.85);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      max-width: 420px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    h1 {
+      font-size: 2.0em;
+      margin-bottom: 15px;
+      color: #4cc9f0;
+      text-shadow: 0 0 10px rgba(76, 201, 240, 0.5);
+    }
+
+    #game-board {
+      width: 300px;
+      height: 600px;
+      background: #0f0f2d;
+      margin: 0 auto 15px;
+      position: relative;
+      border: 3px solid #4361ee;
+      border-radius: 8px;
+      overflow: hidden;
+      touch-action: none;
+    }
+
+    .block {
+      position: absolute;
+      width: 29px;
+      height: 29px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 2px;
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-around;
+      margin-bottom: 15px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+
+    #score { color: #4ade80; }
+    #level { color: #f97316; }
+
+    #restart-btn {
+      background: linear-gradient(to right, #4361ee, #3a0ca3);
+      color: white;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 10px auto;
+      display: block;
+      box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+    }
+
+    #restart-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 8px rgba(67, 97, 238, 0.5);
+    }
+
+    .controls-info {
+      margin-top: 10px;
+      font-size: 0.85em;
+      color: #94a3b8;
+      line-height: 1.4;
+    }
+
+    /* 虚拟控制按钮 */
+    .virtual-controls {
+      display: none;
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      right: 0;
+      margin: 0 auto;
+      width: 280px;
+      max-width: 90%;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+    }
+
+    .control-btn {
+      width: 60px;
+      height: 60px;
+      background: rgba(67, 97, 238, 0.3);
+      border: 2px solid #4361ee;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      backdrop-filter: blur(5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      transition: all 0.2s;
+    }
+
+    .control-btn:active {
+      transform: scale(0.95);
+      background: rgba(67, 97, 238, 0.5);
+    }
+
+    .rotate-btn {
+      width: 70px;
+      height: 70px;
+      background: rgba(245, 158, 11, 0.3);
+      border-color: #f59e0b;
+    }
+
+    .rotate-btn:active {
+      background: rgba(245, 158, 11, 0.5);
+    }
+
+    .drop-btn {
+      width: 80px;
+      height: 80px;
+      background: rgba(239, 68, 68, 0.3);
+      border-color: #ef4444;
+      font-size: 1.2em;
+    }
+
+    .drop-btn:active {
+      background: rgba(239, 68, 68, 0.5);
+    }
+
+    .game-over {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      display: none;
+    }
+
+    .game-over h2 {
+      font-size: 3em;
+      color: #ef4444;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px rgba(239, 68, 68, 0.7);
+    }
+
+    .final-score {
+      font-size: 1.8em;
+      color: #4ade80;
+      margin-bottom: 25px;
+    }
+
+    .final-restart-btn {
+      background: linear-gradient(to right, #4ade80, #22c55e);
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 30px;
+      font-size: 1.3em;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 6px 12px rgba(74, 222, 128, 0.4);
+    }
+
+    .final-restart-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 480px) {
+      .game-container {
+        padding: 15px;
+        margin: 0;
+        width: 100%;
+        max-width: 100%;
+      }
+      
+      #game-board {
+        width: 100%;
+        max-width: 280px;
+        height: 560px;
+      }
+      
+      .block {
+        width: calc(100% / 10 - 1px);
+        height: calc(100% / 20 - 1px);
+      }
+      
+      .virtual-controls {
+        display: block;
+        bottom: 15px;
+      }
+      
+      .control-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2em;
+      }
+      
+      .rotate-btn {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .drop-btn {
+        width: 70px;
+        height: 70px;
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      .controls-info {
+        display: none;
+      }
+    }
+
+    @media (min-width: 481px) {
+      .virtual-controls {
+        display: none !important;
+      }
+      
+      .desktop-controls {
+        display: block;
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #94a3b8;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>🎯 俄罗斯方块</h1>
+    <div id="game-board">
+      <div class="game-over" id="game-over">
+        <h2>GAME OVER</h2>
+        <div class="final-score" id="final-score">最终得分: 0</div>
+        <button class="final-restart-btn" id="final-restart-btn">再玩一次</button>
+      </div>
+    </div>
+    <div class="game-info">
+      <div id="score">得分: 0</div>
+      <div id="level">等级: 1</div>
+    </div>
+    <button id="restart-btn">重新开始</button>
+    <div class="desktop-controls">
+      <p>⌨️ <strong>键盘控制：</strong> ←→ 移动 | ↑ 旋转 | ↓ 加速 | 空格 瞬降</p>
+    </div>
+    
+    <!-- 虚拟控制按钮 (仅手机显示) -->
+    <div class="virtual-controls">
+      <div class="control-row">
+        <div class="control-btn" id="left-btn">←</div>
+        <div class="rotate-btn" id="rotate-btn">↻</div>
+        <div class="control-btn" id="right-btn">→</div>
+      </div>
+      <div class="control-row" style="justify-content: center;">
+        <div class="drop-btn" id="drop-btn">⇓ 瞬降</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 俄罗斯方块核心引擎 - 完整控制版
+    class Tetris {
+      constructor() {
+        this.BOARD_WIDTH = 10;
+        this.BOARD_HEIGHT = 20;
+        this.BLOCK_SIZE = 30;
+        this.board = Array(this.BOARD_HEIGHT).fill().map(() => Array(this.BOARD_WIDTH).fill(0));
+        this.score = 0;
+        this.level = 1;
+        this.speed = 1000;
+        this.currentPiece = null;
+        this.gameInterval = null;
+        this.isGameOver = false;
+        this.touchStartX = 0;
+        this.gameBoard = document.getElementById('game-board');
+        this.scoreDisplay = document.getElementById('score');
+        this.levelDisplay = document.getElementById('level');
+        this.gameOverScreen = document.getElementById('game-over');
+        this.finalScoreDisplay = document.getElementById('final-score');
+        
+        // 控制按钮
+        this.leftBtn = document.getElementById('left-btn');
+        this.rightBtn = document.getElementById('right-btn');
+        this.rotateBtn = document.getElementById('rotate-btn');
+        this.dropBtn = document.getElementById('drop-btn');
+        
+        this.init();
+      }
+
+      // 方块形状定义 [I, O, T, L, J, S, Z]
+      SHAPES = [
+        [[1,1,1,1]], // I
+        [[1,1],[1,1]], // O
+        [[0,1,0],[1,1,1]], // T
+        [[1,0,0],[1,1,1]], // L
+        [[0,0,1],[1,1,1]], // J
+        [[0,1,1],[1,1,0]], // S
+        [[1,1,0],[0,1,1]]  // Z
+      ];
+
+      // 方块颜色
+      COLORS = [
+        '#3b82f6', // 蓝色 I
+        '#f59e0b', // 橙色 O  
+        '#8b5cf6', // 紫色 T
+        '#ec4899', // 粉色 L
+        '#14b8a6', // 青色 J
+        '#22c55e', // 绿色 S
+        '#ef4444'  // 红色 Z
+      ];
+
+      init() {
+        this.setupEventListeners();
+        this.createNewPiece();
+        this.startGameLoop();
+        this.render();
+      }
+
+      setupEventListeners() {
+        // 键盘控制
+        document.addEventListener('keydown', (e) => {
+          if (this.isGameOver) return;
+          
+          switch(e.key) {
+            case 'ArrowLeft': this.moveLeft(); e.preventDefault(); break;
+            case 'ArrowRight': this.moveRight(); e.preventDefault(); break;
+            case 'ArrowDown': this.moveDown(); e.preventDefault(); break;
+            case 'ArrowUp': this.rotate(); e.preventDefault(); break;
+            case ' ': this.hardDrop(); e.preventDefault(); break;
+          }
+        });
+
+        // 手机触屏控制 (滑动)
+        this.gameBoard.addEventListener('touchstart', (e) => {
+          if (this.isGameOver) return;
+          this.touchStartX = e.touches[0].clientX;
+          e.preventDefault();
+        }, { passive: false });
+
+        this.gameBoard.addEventListener('touchend', (e) => {
+          if (this.isGameOver) return;
+          const touchEndX = e.changedTouches[0].clientX;
+          const diff = touchEndX - this.touchStartX;
+          
+          if (diff < -50) this.moveLeft();
+          else if (diff > 50) this.moveRight();
+          else if (Math.abs(diff) < 30) this.rotate();
+          
+          e.preventDefault();
+        }, { passive: false });
+
+        // 虚拟按钮控制
+        this.leftBtn.addEventListener('touchstart', (e) => {
+          if (!this.isGameOver) this.moveLeft();
+          e.preventDefault();
+        });
+        
+        this.rightBtn.addEventListener('touchstart', (e) => {
+          if (!this.isGameOver) this.moveRight();
+          e.preventDefault();
+        });
+        
+        this.rotateBtn.addEventListener('touchstart', (e) => {
+          if (!this.isGameOver) this.rotate();
+          e.preventDefault();
+        });
+        
+        this.dropBtn.addEventListener('touchstart', (e) => {
+          if (!this.isGameOver) this.hardDrop();
+          e.preventDefault();
+        });
+
+        // 重新开始按钮
+        document.getElementById('restart-btn').addEventListener('click', () => this.resetGame());
+        document.getElementById('final-restart-btn').addEventListener('click', () => this.resetGame());
+      }
+
+      createNewPiece() {
+        const shapeIndex = Math.floor(Math.random() * this.SHAPES.length);
+        this.currentPiece = {
+          shape: this.SHAPES[shapeIndex],
+          color: this.COLORS[shapeIndex],
+          x: Math.floor(this.BOARD_WIDTH / 2) - 1,
+          y: 0
+        };
+        
+        // 检查生成位置是否被占用（游戏结束）
+        if (!this.isValidPosition(this.currentPiece.x, this.currentPiece.y, this.currentPiece.shape)) {
+          this.gameOver();
+          return false;
+        }
+        return true;
+      }
+
+      isValidPosition(x, y, shape) {
+        for (let row = 0; row < shape.length; row++) {
+          for (let col = 0; col < shape[row].length; col++) {
+            if (shape[row][col]) {
+              const newX = x + col;
+              const newY = y + row;
+              if (
+                newX < 0 || 
+                newX >= this.BOARD_WIDTH || 
+                newY >= this.BOARD_HEIGHT || 
+                (newY >= 0 && this.board[newY][newX])
+              ) {
+                return false;
+              }
+            }
+          }
+        }
+        return true;
+      }
+
+      moveLeft() {
+        if (this.isValidPosition(this.currentPiece.x - 1, this.currentPiece.y, this.currentPiece.shape)) {
+          this.currentPiece.x--;
+          this.render();
+        }
+      }
+
+      moveRight() {
+        if (this.isValidPosition(this.currentPiece.x + 1, this.currentPiece.y, this.currentPiece.shape)) {
+          this.currentPiece.x++;
+          this.render();
+        }
+      }
+
+      moveDown() {
+        if (this.isValidPosition(this.currentPiece.x, this.currentPiece.y + 1, this.currentPiece.shape)) {
+          this.currentPiece.y++;
+          this.render();
+          return true;
+        } else {
+          this.mergePiece();
+          this.checkLines();
+          if (!this.createNewPiece()) {
+            this.gameOver();
+          }
+          this.render();
+          return false;
+        }
+      }
+
+      hardDrop() {
+        while (this.moveDown()) {}
+      }
+
+      rotate() {
+        const shape = this.currentPiece.shape;
+        const rotated = [];
+        
+        // 转置矩阵
+        for (let col = 0; col < shape[0].length; col++) {
+          const newRow = [];
+          for (let row = shape.length - 1; row >= 0; row--) {
+            newRow.push(shape[row][col]);
+          }
+          rotated.push(newRow);
+        }
+        
+        // 检查旋转后位置
+        if (this.isValidPosition(this.currentPiece.x, this.currentPiece.y, rotated)) {
+          this.currentPiece.shape = rotated;
+          this.render();
+        }
+      }
+
+      mergePiece() {
+        this.currentPiece.shape.forEach((row, y) => {
+          row.forEach((value, x) => {
+            if (value) {
+              const boardY = this.currentPiece.y + y;
+              if (boardY >= 0) {
+                this.board[boardY][this.currentPiece.x + x] = this.currentPiece.color;
+              }
+            }
+          });
+        });
+      }
+
+      checkLines() {
+        let linesCleared = 0;
+        
+        for (let y = this.BOARD_HEIGHT - 1; y >= 0; y--) {
+          if (this.board[y].every(cell => cell)) {
+            // 删除该行
+            this.board.splice(y, 1);
+            // 在顶部添加新空行
+            this.board.unshift(Array(this.BOARD_WIDTH).fill(0));
+            linesCleared++;
+            y++; // 重新检查当前行
+          }
+        }
+        
+        // 更新得分和等级
+        if (linesCleared > 0) {
+          const points = [40, 100, 300, 1200][linesCleared - 1] * this.level;
+          this.score += points;
+          this.scoreDisplay.textContent = `得分: ${this.score}`;
+          
+          // 每清除10行升一级
+          const newLevel = Math.floor(this.score / 1000) + 1;
+          if (newLevel > this.level) {
+            this.level = newLevel;
+            this.levelDisplay.textContent = `等级: ${this.level}`;
+            this.speed = Math.max(100, 1000 - (this.level - 1) * 100);
+            clearInterval(this.gameInterval);
+            this.startGameLoop();
+          }
+        }
+      }
+
+      gameOver() {
+        this.isGameOver = true;
+        clearInterval(this.gameInterval);
+        this.finalScoreDisplay.textContent = `最终得分: ${this.score}`;
+        this.gameOverScreen.style.display = 'flex';
+      }
+
+      startGameLoop() {
+        this.gameInterval = setInterval(() => {
+          if (!this.isGameOver) {
+            this.moveDown();
+          }
+        }, this.speed);
+      }
+
+      render() {
+        this.gameBoard.innerHTML = '<div class="game-over" id="game-over"><h2>GAME OVER</h2><div class="final-score" id="final-score">最终得分: 0</div><button class="final-restart-btn" id="final-restart-btn">再玩一次</button></div>';
+        
+        // 重新获取游戏结束元素
+        this.gameOverScreen = document.getElementById('game-over');
+        this.finalScoreDisplay = document.getElementById('final-score');
+        
+        if (this.isGameOver) {
+          this.gameOverScreen.style.display = 'flex';
+          this.finalScoreDisplay.textContent = `最终得分: ${this.score}`;
+          return;
+        }
+        
+        // 绘制已固定方块
+        for (let y = 0; y < this.BOARD_HEIGHT; y++) {
+          for (let x = 0; x < this.BOARD_WIDTH; x++) {
+            if (this.board[y][x]) {
+              const block = document.createElement('div');
+              block.className = 'block';
+              block.style.backgroundColor = this.board[y][x];
+              block.style.left = `${x * this.BLOCK_SIZE}px`;
+              block.style.top = `${y * this.BLOCK_SIZE}px`;
+              block.style.boxShadow = `0 0 5px ${this.board[y][x]}`;
+              this.gameBoard.appendChild(block);
+            }
+          }
+        }
+        
+        // 绘制当前活动方块
+        if (this.currentPiece) {
+          this.currentPiece.shape.forEach((row, y) => {
+            row.forEach((value, x) => {
+              if (value) {
+                const block = document.createElement('div');
+                block.className = 'block';
+                block.style.backgroundColor = this.currentPiece.color;
+                block.style.left = `${(this.currentPiece.x + x) * this.BLOCK_SIZE}px`;
+                block.style.top = `${(this.currentPiece.y + y) * this.BLOCK_SIZE}px`;
+                block.style.boxShadow = `0 0 8px ${this.currentPiece.color}`;
+                block.style.zIndex = '10';
+                this.gameBoard.appendChild(block);
+              }
+            });
+          });
+        }
+      }
+
+      resetGame() {
+        this.board = Array(this.BOARD_HEIGHT).fill().map(() => Array(this.BOARD_WIDTH).fill(0));
+        this.score = 0;
+        this.level = 1;
+        this.speed = 1000;
+        this.scoreDisplay.textContent = '得分: 0';
+        this.levelDisplay.textContent = '等级: 1';
+        this.isGameOver = false;
+        this.gameOverScreen.style.display = 'none';
+        
+        clearInterval(this.gameInterval);
+        this.createNewPiece();
+        this.startGameLoop();
+        this.render();
+      }
+    }
+
+    // 页面加载完成后初始化游戏
+    window.addEventListener('load', () => {
+      const game = new Tetris();
+      
+      // 防止页面滚动
+      document.body.addEventListener('touchmove', (e) => {
+        if (!document.querySelector('.game-over').style.display.includes('flex')) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+      
+      // 检测设备类型
+      const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        document.querySelector('.desktop-controls').style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
