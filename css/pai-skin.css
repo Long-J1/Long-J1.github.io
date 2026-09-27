@@ -1,0 +1,305 @@
+/* ============================================================
+   Personal AI 官网皮肤 · 紫粉毛玻璃版
+   手法借鉴（毛玻璃/氛围光/悬浮动效），代码全部手写。
+   日间 = 淡紫粉光海；夜间 = 深紫星空（html.night）
+   ============================================================ */
+
+/* ---------------- 设计变量 ---------------- */
+:root {
+  --bg-a: #f2e9fc;
+  --bg-b: #fdeaf5;
+  --bg-c: #fff9fc;
+  --text: #3d3355;
+  --text-2: #6f6590;
+  --text-3: #9790ab;
+  --accent: #9061e0;
+  --grad: linear-gradient(135deg, #a678f0, #f191d0);
+  --glass: rgba(255, 255, 255, .62);
+  --glass-strong: rgba(255, 255, 255, .82);
+  --glass-border: rgba(255, 255, 255, .85);
+  --shadow: rgba(122, 84, 186, .14);
+  --shadow-deep: rgba(122, 84, 186, .22);
+  --line: rgba(150, 110, 220, .18);
+  --blob-1: rgba(166, 120, 240, .30);
+  --blob-2: rgba(241, 145, 208, .26);
+  --blob-3: rgba(196, 181, 253, .36);
+  --star-op: 0;
+  --petal-op: .7;
+  --hero-text: #31284a;
+  --hero-sub: #6a608a;
+}
+html.night {
+  --bg-a: #151024;
+  --bg-b: #1e1433;
+  --bg-c: #171129;
+  --text: #ece7f8;
+  --text-2: #b3a8d0;
+  --text-3: #8d82ad;
+  --accent: #b794f6;
+  --grad: linear-gradient(135deg, #8b5cf6, #ec7ed0);
+  --glass: rgba(46, 36, 76, .55);
+  --glass-strong: rgba(40, 32, 66, .82);
+  --glass-border: rgba(255, 255, 255, .10);
+  --shadow: rgba(0, 0, 0, .38);
+  --shadow-deep: rgba(0, 0, 0, .5);
+  --line: rgba(183, 148, 246, .24);
+  --blob-1: rgba(139, 92, 246, .30);
+  --blob-2: rgba(236, 72, 153, .20);
+  --blob-3: rgba(99, 102, 241, .28);
+  --star-op: 1;
+  --petal-op: .3;
+  --hero-text: #f4efff;
+  --hero-sub: #c3b8e2;
+}
+
+/* ---------------- 背景氛围层（固定画布） ---------------- */
+.pai-aura {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: linear-gradient(165deg, var(--bg-a) 0%, var(--bg-b) 48%, var(--bg-c) 100%);
+  transition: background .6s ease;
+}
+.pai-aura .blob { position: absolute; border-radius: 50%; transition: background .6s ease; }
+.pai-aura .b1 {
+  width: 58vw; height: 46vw; left: -16vw; top: -18vw;
+  background: radial-gradient(closest-side, var(--blob-1), transparent 72%);
+  animation: pai-drift1 38s ease-in-out infinite alternate;
+}
+.pai-aura .b2 {
+  width: 52vw; height: 42vw; right: -14vw; top: -12vw;
+  background: radial-gradient(closest-side, var(--blob-2), transparent 72%);
+  animation: pai-drift2 46s ease-in-out infinite alternate;
+}
+.pai-aura .b3 {
+  width: 46vw; height: 40vw; left: 8vw; bottom: -20vw;
+  background: radial-gradient(closest-side, var(--blob-3), transparent 72%);
+  animation: pai-drift3 52s ease-in-out infinite alternate;
+}
+@keyframes pai-drift1 { to { transform: translate(7vw, 5vh) scale(1.14); } }
+@keyframes pai-drift2 { to { transform: translate(-6vw, 7vh) scale(1.10); } }
+@keyframes pai-drift3 { to { transform: translate(5vw, -6vh) scale(1.16); } }
+
+/* 飘落花瓣（日间主打，夜间淡出） */
+.pai-petal {
+  position: absolute;
+  top: -8vh;
+  width: 15px;
+  height: 15px;
+  opacity: var(--petal-op);
+  background: linear-gradient(135deg, #ffaed8, #f48fd0);
+  border-radius: 70% 12% 70% 12%;
+  animation: pai-fall linear infinite;
+  transition: opacity .6s;
+}
+@keyframes pai-fall {
+  0%   { transform: translateY(-6vh) rotate(0deg) translateX(0); }
+  25%  { transform: translateY(28vh) rotate(95deg) translateX(26px); }
+  50%  { transform: translateY(55vh) rotate(185deg) translateX(-14px); }
+  75%  { transform: translateY(82vh) rotate(275deg) translateX(22px); }
+  100% { transform: translateY(110vh) rotate(365deg) translateX(0); }
+}
+
+/* 星点（夜间显现，微微闪烁） */
+.pai-star {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  background: #fff;
+  opacity: 0;
+  box-shadow: 0 0 6px 1px rgba(255, 255, 255, .7);
+  transition: opacity .8s ease;
+  animation: pai-twinkle 3.4s ease-in-out infinite alternate;
+}
+html.night .pai-star { opacity: var(--star-op); }
+@keyframes pai-twinkle {
+  from { filter: brightness(.6); }
+  to   { filter: brightness(1.5); }
+}
+
+/* ---------------- 全站基调 ---------------- */
+/* landscape 的 #wrap 是 z-index:1 + #eee 实底，会盖死氛围层 → 透出来 */
+#wrap { background: transparent; }
+body {
+  color: var(--text);
+  transition: color .4s;
+}
+a { color: var(--accent); transition: color .2s, opacity .2s; }
+a:hover { color: var(--accent); opacity: .82; }
+::selection { background: rgba(166, 120, 240, .32); }
+html { scrollbar-color: #c4a8f0 transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: linear-gradient(#d3bdf7, #f5bfe0); border-radius: 8px; }
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(#c4a8f0, #eeaed8); }
+html.night ::-webkit-scrollbar-thumb { background: linear-gradient(#6d4fd0, #b656a0); }
+
+/* ---------------- 玻璃卡片（文章/组件/侧栏） ---------------- */
+.block,
+#sidebar .widget,
+.article {
+  background: var(--glass);
+  backdrop-filter: blur(16px) saturate(1.25);
+  -webkit-backdrop-filter: blur(16px) saturate(1.25);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 34px var(--shadow);
+  border-radius: 16px;
+  transition: transform .35s ease, box-shadow .35s ease, background .5s ease;
+}
+.block:hover,
+#sidebar .widget:hover,
+.article:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 44px var(--shadow-deep);
+}
+
+/* ---------------- 悬浮磨砂导航条 ---------------- */
+/* 压扁 landscape 的大 banner：全站改成紧凑导航条 */
+#header {
+  height: auto !important;
+  border-bottom: none;
+}
+#header::before, #header::after { display: none; }
+#banner { background: transparent !important; height: 0; }
+#header-outer { height: auto; }
+#header-title { display: none; }
+#main-nav, #sub-nav, .nav-icon, .main-nav-link { text-shadow: none; }
+
+#header-outer {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: var(--glass-strong);
+  backdrop-filter: blur(20px) saturate(1.3);
+  -webkit-backdrop-filter: blur(20px) saturate(1.3);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: 0 8px 28px var(--shadow);
+  transition: background .5s ease;
+}
+#logo {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  font-weight: 800;
+  opacity: 1 !important;
+}
+.main-nav-link {
+  color: var(--text-2) !important;
+  position: relative;
+  padding-bottom: 3px;
+}
+.main-nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%; bottom: -2px;
+  width: 0; height: 2.5px;
+  border-radius: 2px;
+  background: var(--grad);
+  transition: width .28s ease, left .28s ease;
+}
+.main-nav-link:hover::after { width: 100%; left: 0; }
+.main-nav-link:hover { color: var(--accent) !important; opacity: 1; }
+.nav-icon { color: var(--text-2) !important; }
+.nav-icon:hover { color: var(--accent) !important; }
+#sub-nav .fa-search:hover, .nav-search-btn:hover { opacity: .8; }
+
+/* ---------------- 按钮：渐变 + 光泽扫过 ---------------- */
+.pai-dl, a.pai-dl, .btn-grad {
+  background: var(--grad) !important;
+  color: #fff !important;
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+.pai-dl::after, a.pai-dl::after, .btn-grad::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -90%;
+  width: 55%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .45), transparent);
+  transform: skewX(-22deg);
+  transition: left .65s ease;
+}
+.pai-dl:hover, a.pai-dl:hover, .btn-grad:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 32px var(--shadow-deep);
+  opacity: 1;
+}
+.pai-dl:hover::after, a.pai-dl:hover::after, .btn-grad:hover::after { left: 140%; }
+
+/* ---------------- 播放器玻璃化 ---------------- */
+#bgm-bar {
+  background: var(--glass-strong);
+  backdrop-filter: blur(18px) saturate(1.3);
+  -webkit-backdrop-filter: blur(18px) saturate(1.3);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px var(--shadow);
+  color: var(--text-2);
+  transition: background .5s ease;
+}
+#bgm-bar button { background: var(--grad); }
+#bgm-vol { accent-color: var(--accent); }
+
+/* 夜间模式下强制修正徽标（download 页是 inline style） */
+html.night .pai-badge {
+  background: rgba(166, 120, 240, .25) !important;
+  border-color: #b794f6 !important;
+  color: #d0bcf8 !important;
+}
+
+/* ---------------- 夜间切换按钮（位于导航条 sub-nav 内） ---------------- */
+#theme-toggle {
+  font-size: 16px;
+  transition: transform .3s ease;
+}
+#theme-toggle:hover { transform: rotate(20deg) scale(1.12); opacity: 1 !important; }
+
+/* ---------------- 文章内容细节 ---------------- */
+.article-inner h2 { color: var(--text); }
+.article-inner blockquote {
+  background: rgba(166, 120, 240, .08);
+  border-left-color: var(--accent);
+  color: var(--text-2);
+}
+html.night .article-inner blockquote { background: rgba(139, 92, 246, .14); }
+.article-inner code {
+  background: rgba(166, 120, 240, .13);
+  color: #7c4de0;
+}
+html.night .article-inner code {
+  background: rgba(183, 148, 246, .16);
+  color: #d0bcf8;
+}
+.article-inner hr { border-top: 1px dashed var(--line); }
+
+/* ---------------- 页脚微调 ---------------- */
+#footer {
+  background: linear-gradient(180deg, rgba(38, 30, 58, .96), #241d3a);
+  border-top: 1px solid var(--line);
+}
+#footer a { color: #cbb6f5; }
+#footer a:hover { color: #f0b8df; }
+#footer-info { color: #9d93ba; }
+#pai-uptime { letter-spacing: .5px; }
+
+/* ---------------- 移动端 ---------------- */
+@media (max-width: 768px) {
+  .pai-aura .b1, .pai-aura .b2, .pai-aura .b3 { width: 90vw; height: 80vw; }
+}
+
+/* ---------------- 手机抽屉 #mobile-nav ----------------
+   原主题靠 #wrap 的不透明底色盖住这个深色抽屉；换皮后 wrap 透明，
+   抽屉会透屏（黑块）。改为默认隐藏，仅手机断点 + 菜单打开时滑入。 */
+#mobile-nav { display: none; }
+@media screen and (max-width: 479px) {
+  #mobile-nav {
+    display: block;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease-out;
+    box-shadow: 6px 0 24px rgba(30, 20, 55, .35);
+  }
+  #container.mobile-nav-on #mobile-nav { transform: translateX(0); }
+}
