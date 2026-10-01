@@ -107,9 +107,13 @@
         
           <a class="main-nav-link" href="/">首页</a>
         
+          <a class="main-nav-link" href="/about/">产品理念</a>
+        
           <a class="main-nav-link" href="/download/">下载</a>
         
-          <a class="main-nav-link" href="/guide/">使用指南</a>
+          <a class="main-nav-link" href="/guide/">新手上手</a>
+        
+          <a class="main-nav-link" href="/feedback/">使用反馈</a>
         
           <a class="main-nav-link" href="/changelog/">更新日志</a>
         
@@ -181,7 +185,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="https://long-j1.github.io/2026/05/31/hello-world/" data-id="cuidLRJfKv0BKJzphrIwS6rk4" data-title="Hello World" class="article-share-link"><span class="fa fa-share">分享</span></a>
+      <a data-url="https://long-j1.github.io/2026/05/31/hello-world/" data-id="cuidj7N87RSC8hRfVOLCVXVCQ" data-title="Hello World" class="article-share-link"><span class="fa fa-share">分享</span></a>
       
       
       
@@ -195,7 +199,7 @@
 
 
 
-<!-- 留言/评论系统待接入：原 Twikoo 后端已失效（见官网改造记录） -->
+<!-- 留言/评论系统待接入：暂未启用第三方评论服务（见官网改造记录） -->
 </section>
         
           <aside id="sidebar">
@@ -276,9 +280,13 @@
   
     <a href="/" class="mobile-nav-link">首页</a>
   
+    <a href="/about/" class="mobile-nav-link">产品理念</a>
+  
     <a href="/download/" class="mobile-nav-link">下载</a>
   
-    <a href="/guide/" class="mobile-nav-link">使用指南</a>
+    <a href="/guide/" class="mobile-nav-link">新手上手</a>
+  
+    <a href="/feedback/" class="mobile-nav-link">使用反馈</a>
   
     <a href="/changelog/" class="mobile-nav-link">更新日志</a>
   
@@ -309,6 +317,47 @@
 
 
 
+
+<!-- 使用反馈页：复制按钮（无后端，纯前端） -->
+<script>
+(function () {
+  var ta = document.getElementById('fbText');
+  if (!ta) return;                       // 不在反馈页，什么都不做
+  var tip = document.getElementById('fbTip');
+  var copyBtn = document.getElementById('fbCopy');
+  var clearBtn = document.getElementById('fbClear');
+
+  function say(text, kind) {
+    if (!tip) return;
+    tip.textContent = text;
+    tip.className = 'fb-tip' + (kind ? ' ' + kind : '');
+    if (kind) setTimeout(function () { tip.className = 'fb-tip'; }, 4000);
+  }
+
+  copyBtn.addEventListener('click', function () {
+    var v = ta.value.trim();
+    if (!v) { say('先写点什么吧～', 'err'); ta.focus(); return; }
+    var done = function () { say('已复制，粘贴给我就行', 'ok'); };
+    var fail = function () {
+      ta.select();
+      say('自动复制被挡了，已帮你选中，按 Ctrl+C 复制', 'err');
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(v).then(done).catch(fail);
+    } else {
+      try {
+        ta.focus(); ta.select();
+        if (document.execCommand('copy')) { done(); ta.setSelectionRange(0, 0); }
+        else fail();
+      } catch (e) { fail(); }
+    }
+  });
+
+  clearBtn.addEventListener('click', function () {
+    ta.value = ''; say('已清空'); ta.focus();
+  });
+})();
+</script>
 
   </div>
 

@@ -303,3 +303,177 @@ html.night .article-inner code {
   }
   #container.mobile-nav-on #mobile-nav { transform: translateX(0); }
 }
+
+
+/* ---------------- 使用反馈页（V0.5.5 新手入门层）----------------
+   只加表单所需的最少样式，配色全部沿用本站现有变量。 */
+.fb-wrap { margin: 14px 0 6px; }
+.fb-text {
+  width: 100%; box-sizing: border-box;
+  font-family: inherit; font-size: 15px; line-height: 1.7;
+  color: var(--ink, #2e3837);
+  background: rgba(255, 255, 255, .72);
+  border: 1px solid rgba(154, 127, 196, .28);
+  border-radius: 14px 18px 16px 20px;
+  padding: 14px 16px; resize: vertical;
+  transition: border-color .18s, box-shadow .18s;
+}
+.fb-text:focus {
+  outline: none; border-color: var(--rose, #d98aa5);
+  box-shadow: 0 0 0 4px rgba(154, 127, 196, .12);
+}
+.fb-text::placeholder { color: rgba(120, 120, 140, .55); }
+.fb-acts {
+  display: flex; gap: 10px; align-items: center;
+  flex-wrap: wrap; margin-top: 12px;
+}
+.fb-btn {
+  font-family: inherit; font-size: 14px; cursor: pointer;
+  padding: 9px 20px; border-radius: 999px;
+  border: 1px solid rgba(154, 127, 196, .3);
+  background: rgba(255, 255, 255, .7); color: inherit;
+  transition: transform .15s, background .2s, border-color .2s;
+}
+.fb-btn:hover { transform: translateY(-1px); border-color: var(--rose, #d98aa5); }
+.fb-btn.primary {
+  background: linear-gradient(120deg, var(--lilac, #9a7fc4), var(--rose, #d98aa5));
+  border-color: transparent; color: #fff;
+}
+.fb-btn.primary:hover { filter: brightness(1.06); }
+.fb-btn:active { transform: translateY(0); }
+.fb-tip { font-size: 13px; opacity: .8; }
+.fb-tip.ok { color: #6f9e7a; }
+.fb-tip.err { color: #c26a5e; }
+
+/* 表格在新手文档里出现得少，但别让它撑破手机屏 */
+.article table { display: block; overflow-x: auto; max-width: 100%; }
+/* 代码块：Hexo 的高亮把每个围栏代码块渲染成 <figure><table>（左侧是行号槽）。
+   上面那条 .article table 会连带命中它们——那属于误伤。这里显式接管：
+   · table 恢复 table 布局，且 max-width:none（否则会被 .article table 的
+     max-width:100% 挤窄，长路径被压成多行）；
+   · 滚动交给外层 figure，页面本身不产生横向滚动条。 */
+.article figure.highlight { max-width: 100%; overflow-x: auto; }
+.article figure.highlight table { display: table; max-width: none; width: auto; }
+
+/* 手机上标题别太大，正文别太挤 */
+@media screen and (max-width: 479px) {
+  .fb-text { font-size: 15px; padding: 12px 13px; border-radius: 12px 15px 13px 16px; }
+  .fb-btn { flex: 1 1 auto; text-align: center; padding: 10px 14px; }
+  .fb-acts { gap: 8px; }
+}
+
+/* ---------------- 反馈页顶部区（V0.5.5）---------------- */
+.fb-open {
+  border: 1px solid rgba(154, 127, 196, .28);
+  border-radius: 18px 22px 20px 24px;
+  background: linear-gradient(135deg, rgba(154,127,196,.10), rgba(217,138,165,.08));
+  padding: 22px 24px; margin: 18px 0 26px;
+}
+.fb-open-lead { margin: 0 0 6px; font-size: 1.18em; font-weight: 600; line-height: 1.6; }
+.fb-open-sub { margin: 0 0 18px; font-size: .95em; opacity: .78; line-height: 1.75; }
+.fb-open-acts { display: flex; gap: 10px; flex-wrap: wrap; }
+.fb-open-note {
+  margin: 14px 0 0; font-size: .86em; opacity: .72; line-height: 1.7;
+  padding-top: 12px; border-top: 1px dashed rgba(154,127,196,.3);
+}
+.fb-open .fb-btn { text-decoration: none; display: inline-block; }
+.fb-btn[disabled] { opacity: .45; cursor: not-allowed; transform: none; }
+.fb-btn[disabled]:hover { transform: none; border-color: rgba(154,197,196,.3); }
+
+@media screen and (max-width: 479px) {
+  .fb-open { padding: 18px 16px; border-radius: 14px 17px 15px 19px; }
+  .fb-open-lead { font-size: 1.1em; }
+  .fb-open-acts .fb-btn { flex: 1 1 auto; text-align: center; }
+}
+
+
+/* ---------------- 产品理念页（V0.5.5）----------------
+   目标：让文字本身成为主体。大留白、窄行宽、无卡片、无动画。
+   刻意不给 h2 加左边框、不给段落加卡片——那些是信息流页的做法，
+   这一页要像一篇长文，不像产品列表。 */
+.article-type-about .article-inner { max-width: 100%; }
+
+.pai-ab { font-size: 1.04em; line-height: 1.95; color: var(--text-1); }
+.pai-ab .article-entry { max-width: 44em; margin: 0 auto; }
+
+/* 页眉：标题 + 一句 eyebrow，克制 */
+.pai-ab .article-header { margin-bottom: 8px; }
+.ab-eyebrow {
+  letter-spacing: .28em; font-size: .74em; text-transform: uppercase;
+  color: var(--accent); opacity: .8; margin: 4px 0 0; font-weight: 600;
+}
+
+/* 两个大标题是文章的两个「段落起点」，视觉上要比章节标题更大 */
+.pai-ab .article-entry h1 {
+  font-size: 1.92em; line-height: 1.5; font-weight: 700;
+  margin: 1.5em 0 .7em; letter-spacing: .5px; color: var(--text-1);
+}
+.pai-ab .article-entry h1:first-of-type { margin-top: .4em; }
+
+/* 章节标题：小号、留白大，不抢正文 */
+.pai-ab .article-entry h2 {
+  font-size: 1.16em; font-weight: 600; color: var(--accent);
+  margin: 2.6em 0 .9em; padding: 0; border: 0; line-height: 1.6;
+}
+.pai-ab .article-entry h3 {
+  font-size: 1em; font-weight: 600; color: var(--text-1);
+  margin: 2.2em 0 .6em;
+}
+
+/* 正文与段落节奏 */
+.pai-ab .article-entry p { margin: 0 0 1.15em; line-height: 1.95; }
+.pai-ab .article-entry strong { font-weight: 700; color: var(--text-1); }
+
+/* 引用块：这是全文最常见的元素，必须待得住 */
+.pai-ab .article-entry blockquote {
+  margin: 1.5em 0; padding: .1em 0 .1em 1.15em;
+  border-left: 3px solid var(--accent);
+  color: var(--text-2); font-size: 1.02em;
+}
+.pai-ab .article-entry blockquote p { margin: 0 0 .5em; }
+.pai-ab .article-entry blockquote p:last-child { margin-bottom: 0; }
+
+/* 柔和分割线 */
+.pai-ab .article-entry hr {
+  border: 0; height: 1px; margin: 3em auto; width: 34%;
+  background: linear-gradient(90deg, transparent, var(--glass-border) 22%,
+              var(--glass-border) 78%, transparent);
+}
+
+/* 结尾那句：略大一点，让它落下来 */
+.pai-ab .article-entry h3 + p { margin-bottom: .9em; }
+.pai-ab .article-entry em { color: var(--text-2); }
+
+/* 页尾 CTA：读完了该干嘛 */
+.pai-ab-foot {
+  max-width: 44em; margin: 3.4em auto 0; padding-top: 1.8em;
+  border-top: 1px solid var(--glass-border);
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.pai-ab-foot a {
+  padding: 12px 30px; border-radius: 999px; font-weight: 600; text-decoration: none !important;
+  border: 1px solid var(--glass-border); background: var(--glass-strong);
+  color: var(--accent) !important; transition: transform .25s, border-color .25s;
+}
+.pai-ab-foot a:hover { transform: translateY(-2px); border-color: var(--accent); }
+.pai-ab-foot a.pai-ab-primary {
+  background: var(--grad); color: #fff !important; border-color: transparent;
+  box-shadow: 0 8px 22px var(--shadow-deep);
+}
+
+/* 移动端：标题不过大、行宽合适、引用不撑破 */
+@media screen and (max-width: 479px) {
+  .pai-ab { font-size: 1em; line-height: 1.9; }
+  .pai-ab .article-entry { max-width: 100%; }
+  /* 主题在 .outer 和 .article-entry 上各留了 20px 内边距，手机上等于左右
+     各浪费 40px —— 375px 屏只剩 20 字/行。理念页是自己排版的，把内层那层
+     去掉，外层 20px 保留（边距还得有，不然字会贴着屏幕边）。 */
+  .pai-ab .article-entry { padding-left: 0; padding-right: 0; }
+  .pai-ab .article-entry h1 { font-size: 1.42em; margin: 1.2em 0 .6em; }
+  .pai-ab .article-entry h2 { font-size: 1.08em; margin: 2.2em 0 .7em; }
+  .pai-ab .article-entry p { margin-bottom: 1em; }
+  .pai-ab .article-entry blockquote { padding-left: .9em; font-size: 1em; }
+  .pai-ab .article-entry hr { margin: 2.4em auto; width: 44%; }
+  .pai-ab-foot { flex-direction: column; margin-top: 2.6em; }
+  .pai-ab-foot a { text-align: center; }
+}

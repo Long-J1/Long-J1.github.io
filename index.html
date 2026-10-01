@@ -105,9 +105,13 @@
         
           <a class="main-nav-link" href="/">首页</a>
         
+          <a class="main-nav-link" href="/about/">产品理念</a>
+        
           <a class="main-nav-link" href="/download/">下载</a>
         
-          <a class="main-nav-link" href="/guide/">使用指南</a>
+          <a class="main-nav-link" href="/guide/">新手上手</a>
+        
+          <a class="main-nav-link" href="/feedback/">使用反馈</a>
         
           <a class="main-nav-link" href="/changelog/">更新日志</a>
         
@@ -174,22 +178,98 @@
   .pai-road p { color: #78550b; line-height: 1.75; }
   .pai-idea { font-style: italic; margin-bottom: 0; }
   .pai-dev p { color: var(--text-2); font-size: .95em; line-height: 1.7; word-break: break-all; }
+  /* ---- 产品理念（首屏 + 预览卡）---- */
+  .pai-hero h1.pai-claim {
+    font-size: 2.15em; line-height: 1.45; margin: 16px 0 12px; letter-spacing: 1px;
+    background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .pai-hero .pai-sub { font-size: 1.08em; color: var(--hero-sub); line-height: 1.85; max-width: 620px; margin: 0 auto 26px; }
+  .pai-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .pai-btn-ghost {
+    display: inline-block; padding: 14px 34px; border-radius: 999px; font-size: 1.05em; font-weight: 600;
+    border: 1px solid var(--glass-border); color: var(--hero-text) !important; text-decoration: none !important;
+    background: var(--glass-strong); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    transition: transform .25s, border-color .25s, background .25s;
+  }
+  .pai-btn-ghost:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .pai-cta .pai-dl { padding: 14px 38px; }
+  .pai-ideas { margin: 0 0 8px; }
+  .pai-ideas > h2 { font-size: 1.3em; border-left: 4px solid #a678f0; padding-left: 10px; margin: 0 0 6px; }
+  .pai-ideas-note { color: var(--text-2); font-size: .92em; margin: 0 0 16px; }
+  .pai-idea-card { flex: 1 1 240px; }
+  .pai-idea-card .ic { font-size: 1.5em; display: block; margin-bottom: 8px; }
+  .pai-idea-card h3 { font-size: 1.02em; }
+  .pai-idea-card p { margin: 0 0 10px; }
+  .pai-idea-card .more { font-size: .88em; text-decoration: none !important; white-space: nowrap; }
+  .pai-moreall { margin: 18px 0 34px; text-align: center; }
+  .pai-moreall a {
+    display: inline-block; padding: 12px 32px; border-radius: 999px; font-weight: 600;
+    border: 1px solid var(--glass-border); background: var(--glass-strong);
+    color: var(--accent) !important; text-decoration: none !important;
+    transition: transform .25s, border-color .25s;
+  }
+  .pai-moreall a:hover { transform: translateY(-2px); border-color: var(--accent); }
+  @media screen and (max-width: 479px) {
+    .pai-hero { padding: 34px 14px 30px; }
+    .pai-hero h1.pai-claim { font-size: 1.62em; line-height: 1.5; }
+    .pai-hero .pai-sub { font-size: 1em; }
+    .pai-cta { flex-direction: column; }
+    .pai-cta .pai-dl, .pai-cta .pai-btn-ghost { width: 100%; box-sizing: border-box; text-align: center; }
+  }
 </style>
 <div class="pai-home">
 
   <section class="pai-hero">
     <span class="pai-badge">v0.5.4 Beta · Windows 版已发布</span>
-    <h1>Personal AI</h1>
-    <p class="pai-slogan">一个真正属于你的 AI。</p>
-    <p class="pai-lead">它装在你自己的电脑上——看得见你做的事，记得住发生过什么，
-      和你聊天时带着「它对你的理解」。所有数据只存在你手里：可看、可改、可删、可带走。</p>
-    <a class="pai-dl" href="/download/">⬇ 下载 Windows 版</a>
+    <h1 class="pai-claim">知道你，和认识你，是两回事。</h1>
+    <p class="pai-sub">Personal AI 想做的，不只是记住你说过什么，<br>
+      而是在足够长的时间里，慢慢形成对你的理解。</p>
+    <div class="pai-cta">
+      <a class="pai-btn-ghost" href="/about/">了解 Personal AI</a>
+      <a class="pai-dl" href="/download/">⬇ 下载 v0.5.4 Beta</a>
+    </div>
     <p class="pai-mini">
-      <a href="/guide/">使用指南</a> ·
+      <a href="/guide/">新手上手</a> ·
+      <a href="/feedback/">使用反馈</a> ·
       <a href="/changelog/">更新日志</a> ·
       <a href="/faq/">常见问题</a>
     </p>
   </section>
+
+  <section class="pai-sec pai-ideas">
+    <h2>它想成为什么样的 AI</h2>
+    <p class="pai-ideas-note">下面是理念里最要紧的四点。完整版有一整页。</p>
+    <div class="pai-cards">
+      <div class="pai-card pai-idea-card">
+        <span class="ic" aria-hidden="true">🧭</span>
+        <h3>理解不是事实</h3>
+        <p>它可以猜，但也知道自己可能猜错。</p>
+        <a class="more" href="/about/">读完整篇 →</a>
+      </div>
+      <div class="pai-card pai-idea-card">
+        <span class="ic" aria-hidden="true">🌙</span>
+        <h3>你离开以后，它没有消失</h3>
+        <p>未来的后台理解、整理与修正。</p>
+        <a class="more" href="/about/">读完整篇 →</a>
+      </div>
+      <div class="pai-card pai-idea-card">
+        <span class="ic" aria-hidden="true">🌱</span>
+        <h3>性格来自相处</h3>
+        <p>不是预设的人设，而是长期相处形成的方式。</p>
+        <a class="more" href="/about/">读完整篇 →</a>
+      </div>
+      <div class="pai-card pai-idea-card">
+        <span class="ic" aria-hidden="true">🚪</span>
+        <h3>聊天只是入口</h3>
+        <p>模型、工具、设备都可以变化，而 Personal AI 持续存在。</p>
+        <a class="more" href="/about/">读完整篇 →</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="pai-moreall">
+    <a href="/about/">读完完整的产品理念 →</a>
+  </div>
 
   <section class="pai-sec">
     <h2>它和普通聊天 AI 有什么不同</h2>
@@ -318,9 +398,13 @@
   
     <a href="/" class="mobile-nav-link">首页</a>
   
+    <a href="/about/" class="mobile-nav-link">产品理念</a>
+  
     <a href="/download/" class="mobile-nav-link">下载</a>
   
-    <a href="/guide/" class="mobile-nav-link">使用指南</a>
+    <a href="/guide/" class="mobile-nav-link">新手上手</a>
+  
+    <a href="/feedback/" class="mobile-nav-link">使用反馈</a>
   
     <a href="/changelog/" class="mobile-nav-link">更新日志</a>
   
@@ -351,6 +435,47 @@
 
 
 
+
+<!-- 使用反馈页：复制按钮（无后端，纯前端） -->
+<script>
+(function () {
+  var ta = document.getElementById('fbText');
+  if (!ta) return;                       // 不在反馈页，什么都不做
+  var tip = document.getElementById('fbTip');
+  var copyBtn = document.getElementById('fbCopy');
+  var clearBtn = document.getElementById('fbClear');
+
+  function say(text, kind) {
+    if (!tip) return;
+    tip.textContent = text;
+    tip.className = 'fb-tip' + (kind ? ' ' + kind : '');
+    if (kind) setTimeout(function () { tip.className = 'fb-tip'; }, 4000);
+  }
+
+  copyBtn.addEventListener('click', function () {
+    var v = ta.value.trim();
+    if (!v) { say('先写点什么吧～', 'err'); ta.focus(); return; }
+    var done = function () { say('已复制，粘贴给我就行', 'ok'); };
+    var fail = function () {
+      ta.select();
+      say('自动复制被挡了，已帮你选中，按 Ctrl+C 复制', 'err');
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(v).then(done).catch(fail);
+    } else {
+      try {
+        ta.focus(); ta.select();
+        if (document.execCommand('copy')) { done(); ta.setSelectionRange(0, 0); }
+        else fail();
+      } catch (e) { fail(); }
+    }
+  });
+
+  clearBtn.addEventListener('click', function () {
+    ta.value = ''; say('已清空'); ta.focus();
+  });
+})();
+</script>
 
   </div>
 
